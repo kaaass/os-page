@@ -56,6 +56,11 @@ public class FifoAlgorithm implements IAlgorithm {
     }
 
     @Override
+    public void onClose() {
+        // 忽略
+    }
+
+    @Override
     public String[] getColumnNames() {
         return new String[]{C_NEXT};
     }

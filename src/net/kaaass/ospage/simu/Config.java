@@ -18,7 +18,7 @@ public class Config {
     /**
      * 工作集窗口大小
      */
-    private int windowSize = 15;
+    private int windowSize = 5;
 
     /**
      * 工作集递推因数

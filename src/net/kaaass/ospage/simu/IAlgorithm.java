@@ -27,6 +27,11 @@ public interface IAlgorithm {
     void onAccess(PageTable pageTable, Simulation.Request request);
 
     /**
+     * 切换其他算法调用
+     */
+    void onClose();
+
+    /**
      * 获得特有列名
      */
     String[] getColumnNames();

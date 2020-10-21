@@ -17,6 +17,11 @@ public class Simulation {
      */
     private final Queue<Integer> freeFrameIds = new ArrayDeque<>();
 
+    /**
+     * 已分配页框，防止重复
+     */
+    private final Set<Integer> allocatedFrameIds = new TreeSet<>();
+
     private PageTable pageTable = null;
 
     private WorkingSet workingSet = null;
@@ -26,6 +31,8 @@ public class Simulation {
     private SimulationLogger log = new SimulationLogger();
 
     public void setAlgorithm(IAlgorithm algorithm) {
+        if (this.algorithm != null)
+            this.algorithm.onClose();
         this.algorithm = algorithm;
         this.reset();
     }
@@ -74,9 +81,18 @@ public class Simulation {
         log.pageSwapIn(request, retireFrameId, dstPage, dstAddr);
     }
 
-    private int generateFrameId() {
+    private int allocNewFrame() {
         var rand = new Random();
-        return rand.nextInt((1 << 4) - 1);
+        int id;
+        while (this.allocatedFrameIds.contains(id = rand.nextInt((1 << 4) - 1)));
+        this.freeFrameIds.add(id);
+        this.allocatedFrameIds.add(id);
+        return id;
+    }
+
+    private void freeFrame(int id) {
+        this.freeFrameIds.remove(id);
+        this.allocatedFrameIds.remove(id);
     }
 
     private void frameSizeChange(int diff) {
@@ -88,9 +104,8 @@ public class Simulation {
             var allocCount = diff;
             var allocFrames = new ArrayList<Integer>();
             for (int i = 0; i < allocCount; i++) {
-                var id = this.generateFrameId();
+                var id = this.allocNewFrame();
                 allocFrames.add(id);
-                this.freeFrameIds.add(id);
             }
             log.workingSetExpand(workingSet, allocFrames);
         } else if (diff < 0) {
@@ -100,7 +115,9 @@ public class Simulation {
             // 有未分配页框，直接释放未分配页框
             if (!this.freeFrameIds.isEmpty()) {
                 while (!this.freeFrameIds.isEmpty() && retireCount > 0) {
-                    retireFrames.add(this.freeFrameIds.poll());
+                    var id = this.freeFrameIds.poll();
+                    retireFrames.add(id);
+                    this.freeFrame(id);
                     retireCount--;
                 }
             }
