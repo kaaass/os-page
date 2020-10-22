@@ -13,17 +13,22 @@ public class Config {
     /**
      * 初始页框数量
      */
-    private int initFrameCount = 3;
+    private int initFrameCount = 4;
 
     /**
      * 工作集窗口大小
      */
-    private int windowSize = 5;
+    private int windowSize = 8;
 
     /**
      * 工作集递推因数
      */
     private float alpha = 0.5f;
+
+    /**
+     * 最近不用的先淘汰算法中清空的周期
+     */
+    private int nurResetInterval = 3;
 
     private final static Config DEFAULT = new Config();
 
@@ -61,5 +66,13 @@ public class Config {
 
     public void setAlpha(float alpha) {
         this.alpha = alpha;
+    }
+
+    public int getNurResetInterval() {
+        return nurResetInterval;
+    }
+
+    public void setNurResetInterval(int nurResetInterval) {
+        this.nurResetInterval = nurResetInterval;
     }
 }

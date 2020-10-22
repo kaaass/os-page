@@ -1,6 +1,6 @@
 package net.kaaass.ospage;
 
-import net.kaaass.ospage.algo.LruAlgorithm;
+import net.kaaass.ospage.algo.NurAlgorithm;
 import net.kaaass.ospage.simu.Simulation;
 
 import java.util.Scanner;
@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         var sc = new Scanner(System.in);
-        var algo = new LruAlgorithm();
+        var algo = new NurAlgorithm();
         var simu = new Simulation();
         simu.setAlgorithm(algo);
         while (true) {
