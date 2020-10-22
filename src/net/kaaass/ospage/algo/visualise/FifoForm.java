@@ -11,28 +11,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
 
-public class FifoForm {
+public class FifoForm extends BaseForm {
     private JTable tableQueue;
     private JPanel mainPanel;
-    private JLabel labelInfo;
     private JTable tableInfo;
 
-    private JFrame frame;
-    private Vector<String> queueColumns;
     private Vector<Vector<String>> queueData;
     private Vector<Vector<String>> infoData;
     private FifoAlgorithm algo;
 
     public FifoForm(FifoAlgorithm algo) {
         this.algo = algo;
-        this.frame = new JFrame("先进先出算法可视化");
-        this.frame.setContentPane(mainPanel);
-        this.frame.setLocationRelativeTo(null);
-        this.frame.pack();
-    }
-
-    public void show() {
-        this.frame.setVisible(true);
+        this.initialize("先进先出算法可视化", this.mainPanel);
     }
 
     public void update(PageTable pageTable) {
@@ -54,33 +44,22 @@ public class FifoForm {
         this.tableQueue.updateUI();
     }
 
-    public void close() {
-        this.frame.setVisible(false);
-    }
-
     private void createUIComponents() {
         // 信息表
-        var columns = new Vector<>() {{
-           add("项目");
-           add("值");
-        }};
         this.infoData = new Vector<>();
-        this.infoData.add(new Vector<>(){{
+        this.infoData.add(new Vector<>() {{
             add("队列头指针");
             add("");
         }});
-        this.infoData.add(new Vector<>(){{
+        this.infoData.add(new Vector<>() {{
             add("队列尾指针");
             add("");
         }});
-        this.tableInfo = new JTable(infoData, columns);
-        this.tableInfo.setPreferredScrollableViewportSize(new Dimension(400, 50));
+        this.tableInfo = createTable(400, 50, new String[]{
+                "项目", "值"
+        }, this.infoData, false);
         // 队列表
-        this.queueColumns = new Vector<>();
         this.queueData = new Vector<>();
-        Collections.addAll(queueColumns, PageEntry.COMMON_COLUMNS);
-        Collections.addAll(queueColumns, this.algo.getColumnNames());
-        this.tableQueue = new JTable(queueData, queueColumns);
-        this.tableQueue.setPreferredScrollableViewportSize(new Dimension(400, 200));
+        this.tableQueue = createTable(400, 200, this.algo.getColumnNames(), this.queueData, true);
     }
 }

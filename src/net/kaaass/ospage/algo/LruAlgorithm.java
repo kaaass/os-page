@@ -1,5 +1,7 @@
 package net.kaaass.ospage.algo;
 
+import net.kaaass.ospage.algo.visualise.BaseForm;
+import net.kaaass.ospage.algo.visualise.LruForm;
 import net.kaaass.ospage.simu.IAlgorithm;
 import net.kaaass.ospage.simu.PageEntry;
 import net.kaaass.ospage.simu.PageTable;
@@ -14,10 +16,12 @@ import java.util.Deque;
 public class LruAlgorithm implements IAlgorithm {
 
     private Deque<PageEntry> stack = new ArrayDeque<>();
+    private LruForm form = new LruForm(this);
 
     @Override
     public void init(PageTable pageTable) {
         stack.clear();
+        this.form.show();
     }
 
     @Override
@@ -40,16 +44,20 @@ public class LruAlgorithm implements IAlgorithm {
 
     @Override
     public void onDraw(Simulation simulation) {
-
+        this.form.update(simulation.getPageTable());
     }
 
     @Override
     public void onClose() {
-
+        this.form.close();
     }
 
     @Override
     public String[] getColumnNames() {
         return new String[0];
+    }
+
+    public Deque<PageEntry> getStack() {
+        return stack;
     }
 }
