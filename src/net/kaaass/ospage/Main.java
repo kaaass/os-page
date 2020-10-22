@@ -1,6 +1,6 @@
 package net.kaaass.ospage;
 
-import net.kaaass.ospage.algo.FifoAlgorithm;
+import net.kaaass.ospage.algo.LruAlgorithm;
 import net.kaaass.ospage.simu.Simulation;
 
 import java.util.Scanner;
@@ -8,9 +8,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         var sc = new Scanner(System.in);
-        var fifo = new FifoAlgorithm();
+        var algo = new LruAlgorithm();
         var simu = new Simulation();
-        simu.setAlgorithm(fifo);
+        simu.setAlgorithm(algo);
         while (true) {
             var req = Simulation.Request.random();
             System.out.println("> 请求：" + req);

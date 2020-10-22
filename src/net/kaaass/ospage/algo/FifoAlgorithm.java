@@ -56,7 +56,7 @@ public class FifoAlgorithm implements IAlgorithm {
     }
 
     @Override
-    public void onAccess(PageTable pageTable, Simulation.Request request) {
+    public void onAccess(PageTable pageTable, Simulation.Request request, PageEntry dstPage) {
         // 忽略
     }
 

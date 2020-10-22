@@ -50,8 +50,8 @@ public class Simulation {
 
     public void runStep() {
         var request = this.requestQueue.poll();
-        this.algorithm.onAccess(this.pageTable, request);
         var dstPage = this.pageTable.mapLogicAddress(request.address);
+        this.algorithm.onAccess(this.pageTable, request, dstPage);
         // 工作集判定
         int diff = this.workingSet.judge(dstPage.getLogicId());
         this.frameSizeChange(diff);

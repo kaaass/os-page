@@ -24,7 +24,7 @@ public interface IAlgorithm {
     /**
      * 访问
      */
-    void onAccess(PageTable pageTable, Simulation.Request request);
+    void onAccess(PageTable pageTable, Simulation.Request request, PageEntry dstPage);
 
     /**
      * 绘制
