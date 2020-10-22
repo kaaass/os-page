@@ -3,10 +3,17 @@ package net.kaaass.ospage;
 import net.kaaass.ospage.algo.NurAlgorithm;
 import net.kaaass.ospage.simu.Simulation;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
         var sc = new Scanner(System.in);
         var algo = new NurAlgorithm();
         var simu = new Simulation();
