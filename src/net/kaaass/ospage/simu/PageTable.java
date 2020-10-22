@@ -1,5 +1,7 @@
 package net.kaaass.ospage.simu;
 
+import java.util.stream.Stream;
+
 /**
  * 页表
  */
@@ -28,6 +30,10 @@ public class PageTable {
 
     public PageEntry get(int pageId) {
         return this.entries[pageId];
+    }
+
+    public Stream<PageEntry> stream() {
+        return Stream.of(entries);
     }
 
 }

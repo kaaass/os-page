@@ -56,29 +56,11 @@ public class Simulation {
         int diff = this.workingSet.judge(dstPage.getLogicId());
         this.frameSizeChange(diff);
         // 内存映射
-        if (dstPage.isInMemory()) {
-            // 在内存
-            var dstAddr = Address.map(request.address, dstPage.getFrameId());
-            log.pageInMemory(request, dstPage, dstAddr);
-            return;
-        }
-        // 不在内存，换入
-        if (!this.freeFrameIds.isEmpty()) {
-            // 若当前还有空闲页框，直接分配
-            var newFrame = this.freeFrameIds.poll();
-            this.allocFrameToPage(dstPage, newFrame);
-            var dstAddr = Address.map(request.address, newFrame);
-            log.pageSwapIn(request, newFrame, dstPage, dstAddr);
-            return;
-        }
-        // 使用算法淘汰一个页框
-        var retirePage = this.algorithm.retire(this.pageTable);
-        var retireFrameId = retirePage.getFrameId();
-        log.pageRetire(retirePage, dstPage);
-        retirePage.setFrameId(-1); // 换出内存
-        this.allocFrameToPage(dstPage, retireFrameId);
-        var dstAddr = Address.map(request.address, retireFrameId);
-        log.pageSwapIn(request, retireFrameId, dstPage, dstAddr);
+        var mapped = this.pageMapping(dstPage, request);
+        if (request.type == AccessType.WRITE)
+            mapped.setAttribute(PageEntry.C_MOD_FLAG, true);
+        // 更新UI
+        this.algorithm.onDraw(this);
     }
 
     private int allocNewFrame() {
@@ -93,6 +75,39 @@ public class Simulation {
     private void freeFrame(int id) {
         this.freeFrameIds.remove(id);
         this.allocatedFrameIds.remove(id);
+    }
+
+    /**
+     * 通过读写请求进行内存页映射
+     * @param dstPage 请求地址对应的页
+     * @param request 请求
+     * @return 映射后的页
+     */
+    private PageEntry pageMapping(PageEntry dstPage, Request request) {
+        if (dstPage.isInMemory()) {
+            // 在内存
+            var dstAddr = Address.map(request.address, dstPage.getFrameId());
+            log.pageInMemory(request, dstPage, dstAddr);
+            return dstPage;
+        }
+        // 不在内存，换入
+        if (!this.freeFrameIds.isEmpty()) {
+            // 若当前还有空闲页框，直接分配
+            var newFrame = this.freeFrameIds.poll();
+            this.allocFrameToPage(dstPage, newFrame);
+            var dstAddr = Address.map(request.address, newFrame);
+            log.pageSwapIn(request, newFrame, dstPage, dstAddr);
+            return dstPage;
+        }
+        // 使用算法淘汰一个页框
+        var retirePage = this.algorithm.retire(this.pageTable);
+        var retireFrameId = retirePage.getFrameId();
+        log.pageRetire(retirePage, dstPage);
+        retirePage.setFrameId(-1); // 换出内存
+        this.allocFrameToPage(dstPage, retireFrameId);
+        var dstAddr = Address.map(request.address, retireFrameId);
+        log.pageSwapIn(request, retireFrameId, dstPage, dstAddr);
+        return dstPage;
     }
 
     private void frameSizeChange(int diff) {
@@ -133,13 +148,25 @@ public class Simulation {
         }
     }
 
+    /**
+     * 页面分配新页框，即换入内存
+     */
     private void allocFrameToPage(PageEntry dstPage, int frameId) {
         dstPage.setFrameId(frameId);
+        dstPage.setAttribute(PageEntry.C_MOD_FLAG, false); // 同时要写出页内容
         this.algorithm.onAlloc(this.pageTable, dstPage);
     }
 
     public void addRequest(Request request) {
         this.requestQueue.add(request);
+    }
+
+    public PageTable getPageTable() {
+        return pageTable;
+    }
+
+    public WorkingSet getWorkingSet() {
+        return workingSet;
     }
 
     public enum AccessType {

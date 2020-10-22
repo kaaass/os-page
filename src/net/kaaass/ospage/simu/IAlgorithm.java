@@ -27,6 +27,11 @@ public interface IAlgorithm {
     void onAccess(PageTable pageTable, Simulation.Request request);
 
     /**
+     * 绘制
+     */
+    void onDraw(Simulation simulation);
+
+    /**
      * 切换其他算法调用
      */
     void onClose();

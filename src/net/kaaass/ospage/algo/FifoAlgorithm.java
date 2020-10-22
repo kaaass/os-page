@@ -1,5 +1,6 @@
 package net.kaaass.ospage.algo;
 
+import net.kaaass.ospage.algo.visualise.FifoForm;
 import net.kaaass.ospage.simu.IAlgorithm;
 import net.kaaass.ospage.simu.PageEntry;
 import net.kaaass.ospage.simu.PageTable;
@@ -11,6 +12,8 @@ import net.kaaass.ospage.simu.Simulation;
 public class FifoAlgorithm implements IAlgorithm {
 
     public static final String C_NEXT = "队列指针";
+
+    private final FifoForm form = new FifoForm(this);
 
     /**
      * 队首
@@ -24,6 +27,8 @@ public class FifoAlgorithm implements IAlgorithm {
         for (int i = 0; i < pageTable.size(); i++) {
             pageTable.get(i).setAttribute(C_NEXT, -1);
         }
+        // 显示可视化窗口
+        this.form.show();
     }
 
     @Override
@@ -56,12 +61,26 @@ public class FifoAlgorithm implements IAlgorithm {
     }
 
     @Override
+    public void onDraw(Simulation simulation) {
+        this.form.update(simulation.getPageTable());
+    }
+
+    @Override
     public void onClose() {
-        // 忽略
+        // 关闭窗口
+        this.form.close();
     }
 
     @Override
     public String[] getColumnNames() {
         return new String[]{C_NEXT};
+    }
+
+    public int getHeadPageId() {
+        return headPageId;
+    }
+
+    public int getTailPageId() {
+        return tailPageId;
     }
 }

@@ -55,6 +55,8 @@ public class WorkingSet {
         var newSize = Math.round(alpha * real + (1 - alpha) * lastPredict);
         var diff = newSize - this.lastPredict;
         this.lastPredict = newSize;
+        this.count = 0;
+        this.workSet.clear();
         return diff;
     }
 
