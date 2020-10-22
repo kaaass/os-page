@@ -26,14 +26,14 @@ public class NurAlgorithm implements IAlgorithm {
     @Override
     public PageEntry retire(PageTable pageTable) {
         // 找任意访问位为0
-        var candidate = pageTable.stream()
+        var candidate = pageTable.stream().parallel()
                 .filter(PageEntry::isInMemory)
                 .filter(page -> page.getAttribute(C_ACCESS).equals(0))
-                .findFirst();
+                .findAny();
         // 若找不到，则取任意一页
-        var result = candidate.or(() -> pageTable.stream()
+        var result = candidate.or(() -> pageTable.stream().parallel()
                 .filter(PageEntry::isInMemory)
-                .findFirst());
+                .findAny());
         return result.orElse(null);
     }
 

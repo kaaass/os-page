@@ -20,7 +20,7 @@ public class Simulation {
     /**
      * 已分配页框，防止重复
      */
-    private final Set<Integer> allocatedFrameIds = new TreeSet<>();
+    private final List<Integer> notAllocatedFrameIds = new ArrayList<>();
 
     private PageTable pageTable = null;
 
@@ -44,6 +44,11 @@ public class Simulation {
                 Config.getDefault().getAlpha(),
                 Config.getDefault().getInitFrameCount());
         this.algorithm.init(this.pageTable);
+        // 重置页框全集
+        for (int i = 0; i < (1 << 4); i++) {
+            this.notAllocatedFrameIds.add(i);
+        }
+        Collections.shuffle(this.notAllocatedFrameIds);
         // 分配初始页框
         this.frameSizeChange(Config.getDefault().getInitFrameCount());
     }
@@ -64,17 +69,15 @@ public class Simulation {
     }
 
     private int allocNewFrame() {
-        var rand = new Random();
-        int id;
-        while (this.allocatedFrameIds.contains(id = rand.nextInt((1 << 4) - 1)));
+        int id = this.notAllocatedFrameIds.get(0);
         this.freeFrameIds.add(id);
-        this.allocatedFrameIds.add(id);
+        this.notAllocatedFrameIds.remove(Integer.valueOf(id));
         return id;
     }
 
     private void freeFrame(int id) {
         this.freeFrameIds.remove(id);
-        this.allocatedFrameIds.remove(id);
+        this.notAllocatedFrameIds.add(id);
     }
 
     /**
@@ -140,6 +143,7 @@ public class Simulation {
             while (retireCount > 0) {
                 var retirePage = this.algorithm.retire(this.pageTable);
                 retireFrames.add(retirePage.getFrameId());
+                this.freeFrame(retirePage.getFrameId());
                 log.pageRetire(retirePage, null);
                 retirePage.setFrameId(-1); // 换出内存
                 retireCount--;
@@ -185,7 +189,7 @@ public class Simulation {
         public static Request random() {
             var rand = new Random();
             AccessType type;
-            if (rand.nextInt(2) == 0)
+            if (rand.nextInt(6) > 0)
                 type = AccessType.READ;
             else
                 type = AccessType.WRITE;

@@ -28,7 +28,7 @@ public class Config {
     /**
      * 最近不用的先淘汰算法中清空的周期
      */
-    private int nurResetInterval = 3;
+    private int nurResetInterval = 5;
 
     private final static Config DEFAULT = new Config();
 
