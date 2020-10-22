@@ -1,5 +1,7 @@
 package net.kaaass.ospage.algo;
 
+import net.kaaass.ospage.algo.visualise.BaseForm;
+import net.kaaass.ospage.algo.visualise.NurForm;
 import net.kaaass.ospage.simu.*;
 
 /**
@@ -9,15 +11,16 @@ public class NurAlgorithm implements IAlgorithm {
 
     public static final String C_ACCESS = "访问标志";
 
-    private int accessCount = 0;
+    private int accessCount = -1;
+    private NurForm form = new NurForm(this);
 
     @Override
     public void init(PageTable pageTable) {
         // 初始化页表
         this.resetFlag(pageTable);
-        this.accessCount = 0;
+        this.accessCount = -1;
         // 显示可视化窗口
-        // this.form.show();
+        this.form.show();
     }
 
     @Override
@@ -57,16 +60,20 @@ public class NurAlgorithm implements IAlgorithm {
 
     @Override
     public void onDraw(Simulation simulation) {
-
+        this.form.update(simulation.getPageTable());
     }
 
     @Override
     public void onClose() {
-
+        this.form.close();
     }
 
     @Override
     public String[] getColumnNames() {
-        return new String[0];
+        return new String[]{C_ACCESS};
+    }
+
+    public int getAccessCount() {
+        return accessCount;
     }
 }

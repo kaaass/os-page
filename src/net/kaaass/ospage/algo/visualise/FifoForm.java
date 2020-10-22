@@ -6,9 +6,7 @@ import net.kaaass.ospage.simu.PageTable;
 import net.kaaass.ospage.util.GuiUtils;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Vector;
 
 public class FifoForm extends BaseForm {

@@ -1,6 +1,5 @@
 package net.kaaass.ospage.algo.visualise;
 
-import net.kaaass.ospage.simu.IAlgorithm;
 import net.kaaass.ospage.simu.PageEntry;
 
 import javax.swing.*;
@@ -10,7 +9,7 @@ import java.util.Vector;
 
 public class BaseForm {
 
-    private JFrame frame = null;
+    protected JFrame frame = null;
 
     public void initialize(String title, JPanel panel) {
         this.frame = new JFrame(title);
