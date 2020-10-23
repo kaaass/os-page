@@ -6,6 +6,7 @@ import net.kaaass.ospage.simu.PageTable;
 import net.kaaass.ospage.util.GuiUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -60,4 +61,5 @@ public class FifoForm extends BaseForm {
         this.queueData = new Vector<>();
         this.tableQueue = createTable(400, 200, this.algo.getColumnNames(), this.queueData, true);
     }
+
 }

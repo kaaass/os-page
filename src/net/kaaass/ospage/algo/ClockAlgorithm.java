@@ -1,9 +1,7 @@
 package net.kaaass.ospage.algo;
 
-import net.kaaass.ospage.algo.visualise.NurForm;
+import net.kaaass.ospage.algo.visualise.ClockForm;
 import net.kaaass.ospage.simu.*;
-
-import java.util.List;
 
 /**
  * 时钟算法
@@ -13,6 +11,7 @@ public class ClockAlgorithm implements IAlgorithm {
     public static final String C_ACCESS = "访问标志";
 
     private int clockPtr = -1;
+    private ClockForm form = new ClockForm(this);
 
     @Override
     public void init(PageTable pageTable) {
@@ -20,16 +19,24 @@ public class ClockAlgorithm implements IAlgorithm {
         this.resetFlag(pageTable);
         this.clockPtr = -1;
         // 显示可视化窗口
-//        this.form.show();
+        this.form.show();
     }
 
     @Override
     public PageEntry retire(PageTable pageTable) {
         PageEntry iter;
         while (!(iter = pageTable.get(this.clockPtr))
-                .getAttribute(PageEntry.C_MOD_FLAG).equals(0)) {
-            iter.setAttribute(PageEntry.C_MOD_FLAG, 0);
+                .getAttribute(C_ACCESS).equals(0)) {
+            iter.setAttribute(C_ACCESS, 0);
             this.clockPtr = findNext(pageTable, this.clockPtr);
+
+            System.out.println("Iter: " + iter.getLogicId());
+            this.form.update(pageTable);
+            try {
+                Thread.sleep(Config.getDefault().getClockPlaySpeed());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         this.clockPtr = findNext(pageTable, this.clockPtr);
         return iter;
@@ -60,16 +67,20 @@ public class ClockAlgorithm implements IAlgorithm {
 
     @Override
     public void onDraw(Simulation simulation) {
-        // this.form.update(simulation.getPageTable());
+         this.form.update(simulation.getPageTable());
     }
 
     @Override
     public void onClose() {
-        // this.form.close();
+         this.form.close();
     }
 
     @Override
     public String[] getColumnNames() {
         return new String[]{C_ACCESS};
+    }
+
+    public int getClockPtr() {
+        return clockPtr;
     }
 }

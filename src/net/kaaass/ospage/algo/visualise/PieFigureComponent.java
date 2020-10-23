@@ -1,13 +1,15 @@
 package net.kaaass.ospage.algo.visualise;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.Collection;
 import java.util.Vector;
 
 /**
  * 饼图控件
  */
-public class PieFigureComponent extends Component {
+public class PieFigureComponent extends JComponent {
 
     /*
      * 绘制参数
@@ -39,7 +41,8 @@ public class PieFigureComponent extends Component {
         this.outerText = outerText;
     }
 
-    public void paint(Graphics g) {
+    @Override
+    public void paintComponent(Graphics g) {
         var g2d = (Graphics2D) g;
         int x = 0;
         int y = 0;
@@ -80,14 +83,16 @@ public class PieFigureComponent extends Component {
         Font font = getFont();
         font = font.deriveFont((float) (innerH * fontSize));
         // 绘制文字
+        var innerText = this.innerText.toArray(new String[0]);
+        var outerText = this.outerText.toArray(new String[0]);
         for (int i = 0; i < sectorCount; i++) {
             // 内部
             var pos = posOnCircle((innerRingSize + outerRingSize) / 2,
                     (i + 0.5) / sectorCount);
-            drawCentricString(g2d, pos[0], pos[1], innerText.get(i), font);
+            drawCentricString(g2d, pos[0], pos[1], innerText[i], font);
             // 外部
             pos = posOnCircle(outerTextPos, (i + 0.5) / sectorCount);
-            drawCentricString(g2d, pos[0], pos[1], outerText.get(i), font);
+            drawCentricString(g2d, pos[0], pos[1], outerText[i], font);
         }
         // 绘制箭头
         var pos = posOnCircle(innerRingSize, (current + 0.5) / sectorCount);
@@ -110,6 +115,12 @@ public class PieFigureComponent extends Component {
         return ret;
     }
 
+    private double[] rotateBy(double x, double y, double rx0, double ry0, double a) {
+        double x0 = (x - rx0) * Math.cos(a) - (y - ry0) * Math.sin(a) + rx0;
+        double y0 = (x - rx0) * Math.sin(a) + (y - ry0) * Math.cos(a) + ry0;
+        return new double[]{x0, y0};
+    }
+
     public void drawCentricString(Graphics2D g2d, double x, double y, String text, Font font) {
         FontMetrics metrics = g2d.getFontMetrics(font);
         x = x - metrics.stringWidth(text) / 2.;
@@ -123,20 +134,13 @@ public class PieFigureComponent extends Component {
         g2d.drawLine(round(x1), round(y1), round(x2), round(y2));
         // 箭头
         var arrowHead = new Polygon();
-        arrowHead.addPoint(0, 0);
-        arrowHead.addPoint(-5, -10);
-        arrowHead.addPoint(5, -10);
-        // 设置旋转位移
-        var tx = new AffineTransform();
-        tx.setToIdentity();
-        double angle = Math.atan2(y2 - y1, x2 - x1);
-        tx.translate(x2, y2);
-        tx.rotate((angle - Math.PI / 2d));
-        // 绘制箭头
-        Graphics2D g = (Graphics2D) g2d.create();
-        g.setTransform(tx);
-        g.fill(arrowHead);
-        g.dispose();
+        double angle = Math.atan2(y2 - y1, x2 - x1) - Math.PI / 2;
+        arrowHead.addPoint(round(x2), round(y2));
+        var pos = rotateBy(-5, -10, 0, 0, angle);
+        arrowHead.addPoint(round(x2 + pos[0]), round(y2 + pos[1]));
+        pos = rotateBy(5, -10, 0, 0, angle);
+        arrowHead.addPoint(round(x2 + pos[0]), round(y2 + pos[1]));
+        g2d.fillPolygon(arrowHead);
     }
 
     private static int round(double val) {
@@ -149,5 +153,13 @@ public class PieFigureComponent extends Component {
 
     public void setCurrent(int current) {
         this.current = current;
+    }
+
+    public int getSectorCount() {
+        return sectorCount;
+    }
+
+    public void setSectorCount(int sectorCount) {
+        this.sectorCount = sectorCount;
     }
 }

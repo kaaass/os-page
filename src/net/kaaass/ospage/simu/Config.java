@@ -30,6 +30,11 @@ public class Config {
      */
     private int nurResetInterval = 5;
 
+    /**
+     * 时钟算法播放速度
+     */
+    private int clockPlaySpeed = 1000;
+
     private final static Config DEFAULT = new Config();
 
     public static Config getDefault() {
@@ -74,5 +79,13 @@ public class Config {
 
     public void setNurResetInterval(int nurResetInterval) {
         this.nurResetInterval = nurResetInterval;
+    }
+
+    public int getClockPlaySpeed() {
+        return clockPlaySpeed;
+    }
+
+    public void setClockPlaySpeed(int clockPlaySpeed) {
+        this.clockPlaySpeed = clockPlaySpeed;
     }
 }

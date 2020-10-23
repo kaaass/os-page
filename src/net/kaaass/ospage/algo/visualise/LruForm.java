@@ -5,6 +5,7 @@ import net.kaaass.ospage.simu.PageTable;
 import net.kaaass.ospage.util.GuiUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Vector;
 
 public class LruForm extends BaseForm {
@@ -28,4 +29,5 @@ public class LruForm extends BaseForm {
         this.data = new Vector<>();
         this.tableStack = createTable(400, 300, this.algo.getColumnNames(), this.data, true);
     }
+
 }

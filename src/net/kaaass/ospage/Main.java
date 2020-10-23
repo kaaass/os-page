@@ -1,7 +1,6 @@
 package net.kaaass.ospage;
 
 import net.kaaass.ospage.algo.ClockAlgorithm;
-import net.kaaass.ospage.algo.NurAlgorithm;
 import net.kaaass.ospage.simu.Simulation;
 
 import javax.swing.*;

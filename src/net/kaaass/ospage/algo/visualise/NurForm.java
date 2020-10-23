@@ -7,6 +7,7 @@ import net.kaaass.ospage.simu.PageTable;
 import net.kaaass.ospage.util.GuiUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
@@ -58,4 +59,5 @@ public class NurForm extends BaseForm {
         super.show();
         this.textFieldInternal.setText(String.valueOf(Config.getDefault().getNurResetInterval()));
     }
+
 }
