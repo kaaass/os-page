@@ -29,8 +29,7 @@ public class ClockAlgorithm implements IAlgorithm {
                 .getAttribute(C_ACCESS).equals(0)) {
             iter.setAttribute(C_ACCESS, 0);
             this.clockPtr = findNext(pageTable, this.clockPtr);
-
-            System.out.println("Iter: " + iter.getLogicId());
+            // 更新窗口
             this.form.update(pageTable);
             try {
                 Thread.sleep(Config.getDefault().getClockPlaySpeed());

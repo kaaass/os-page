@@ -1,6 +1,7 @@
 package net.kaaass.ospage;
 
 import net.kaaass.ospage.algo.ClockAlgorithm;
+import net.kaaass.ospage.algo.ImproveClockAlgorithm;
 import net.kaaass.ospage.simu.Simulation;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ public class Main {
         }
 
         var sc = new Scanner(System.in);
-        var algo = new ClockAlgorithm();
+        var algo = new ImproveClockAlgorithm();
         var simu = new Simulation();
         simu.setAlgorithm(algo);
         while (true) {
