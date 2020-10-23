@@ -79,6 +79,11 @@ public class ClockAlgorithm implements IAlgorithm {
         return new String[]{C_ACCESS};
     }
 
+    @Override
+    public String name() {
+        return "时钟（CLOCK）";
+    }
+
     public int getClockPtr() {
         return clockPtr;
     }

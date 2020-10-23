@@ -38,6 +38,7 @@ public class Simulation {
     }
 
     public void reset() {
+        if (this.algorithm == null) return;
         this.requestQueue.clear();
         this.pageTable = new PageTable(Config.getDefault().getLogicPageCount());
         this.workingSet = new WorkingSet(Config.getDefault().getWindowSize(),
@@ -54,6 +55,7 @@ public class Simulation {
     }
 
     public void runStep() {
+        if (this.algorithm == null) return;
         var request = this.requestQueue.poll();
         var dstPage = this.pageTable.mapLogicAddress(request.address);
         this.algorithm.onAccess(this.pageTable, request, dstPage);

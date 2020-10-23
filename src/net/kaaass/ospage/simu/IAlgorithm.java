@@ -40,4 +40,9 @@ public interface IAlgorithm {
      * 获得特有列名
      */
     String[] getColumnNames();
+
+    /**
+     * 获得算法名称
+     */
+    String name();
 }

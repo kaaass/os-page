@@ -73,6 +73,11 @@ public class NurAlgorithm implements IAlgorithm {
         return new String[]{C_ACCESS};
     }
 
+    @Override
+    public String name() {
+        return "最近不用先淘汰（NUR）";
+    }
+
     public int getAccessCount() {
         return accessCount;
     }

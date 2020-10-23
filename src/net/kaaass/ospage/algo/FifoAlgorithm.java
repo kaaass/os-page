@@ -76,6 +76,11 @@ public class FifoAlgorithm implements IAlgorithm {
         return new String[]{C_NEXT};
     }
 
+    @Override
+    public String name() {
+        return "先进先出（FIFO）";
+    }
+
     public int getHeadPageId() {
         return headPageId;
     }

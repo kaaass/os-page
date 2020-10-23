@@ -57,6 +57,11 @@ public class LruAlgorithm implements IAlgorithm {
         return new String[0];
     }
 
+    @Override
+    public String name() {
+        return "使用最久先淘汰（LRU）";
+    }
+
     public Deque<PageEntry> getStack() {
         return stack;
     }

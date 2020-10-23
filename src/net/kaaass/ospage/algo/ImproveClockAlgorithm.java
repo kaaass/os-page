@@ -115,6 +115,11 @@ public class ImproveClockAlgorithm implements IAlgorithm {
         return new String[]{C_ACCESS};
     }
 
+    @Override
+    public String name() {
+        return "改进时钟";
+    }
+
     public int getClockPtr() {
         return clockPtr;
     }
