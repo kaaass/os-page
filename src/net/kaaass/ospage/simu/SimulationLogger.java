@@ -27,7 +27,7 @@ public class SimulationLogger {
     }
 
     public void workingSetSizeChange(WorkingSet set, int diff) {
-        format("工作集大小变换为 %d", set.size());
+        format("工作集大小变换为 %d，变化值 %d", set.size(), diff);
     }
 
     public void workingSetShrink(WorkingSet workingSet, ArrayList<Integer> retireFrames) {

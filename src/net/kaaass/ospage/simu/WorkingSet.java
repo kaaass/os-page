@@ -63,4 +63,9 @@ public class WorkingSet {
     public int size() {
         return this.lastPredict;
     }
+
+    public void reset(int init) {
+        this.count = 0;
+        this.lastPredict = init;
+    }
 }

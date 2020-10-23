@@ -44,15 +44,20 @@ public class Simulation {
         this.workingSet = new WorkingSet(Config.getDefault().getWindowSize(),
                 Config.getDefault().getAlpha(),
                 Config.getDefault().getInitFrameCount());
+        // 算法初始化
         this.algorithm.init(this.pageTable);
         this.algorithm.onDraw(this);
         // 重置页框全集
+        this.notAllocatedFrameIds.clear();
         for (int i = 0; i < (1 << 4); i++) {
             this.notAllocatedFrameIds.add(i);
         }
         Collections.shuffle(this.notAllocatedFrameIds);
+        this.freeFrameIds.clear();
         // 分配初始页框
         this.frameSizeChange(Config.getDefault().getInitFrameCount());
+        // 工作集重置
+        this.workingSet.reset(Config.getDefault().getInitFrameCount());
     }
 
     public void runStep() {
