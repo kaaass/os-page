@@ -45,6 +45,7 @@ public class Simulation {
                 Config.getDefault().getAlpha(),
                 Config.getDefault().getInitFrameCount());
         this.algorithm.init(this.pageTable);
+        this.algorithm.onDraw(this);
         // 重置页框全集
         for (int i = 0; i < (1 << 4); i++) {
             this.notAllocatedFrameIds.add(i);
@@ -56,6 +57,7 @@ public class Simulation {
 
     public void runStep() {
         if (this.algorithm == null) return;
+        if (this.requestQueue.isEmpty()) return;
         var request = this.requestQueue.poll();
         var dstPage = this.pageTable.mapLogicAddress(request.address);
         this.algorithm.onAccess(this.pageTable, request, dstPage);
@@ -175,13 +177,28 @@ public class Simulation {
         return workingSet;
     }
 
+    public Queue<Request> getRequestQueue() {
+        return requestQueue;
+    }
+
     public enum AccessType {
-        READ, WRITE
+        READ("读"), WRITE("写");
+
+        private final String name;
+
+        AccessType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
     }
 
     public static class Request {
-        AccessType type;
-        Address address;
+        public AccessType type;
+        public Address address;
 
         public Request(AccessType type, Address address) {
             this.type = type;

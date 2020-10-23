@@ -16,6 +16,7 @@ public class NurAlgorithm implements IAlgorithm {
 
     @Override
     public void init(PageTable pageTable) {
+        this.accessCount = -1;
         // 初始化页表
         this.resetFlag(pageTable);
         this.accessCount = -1;

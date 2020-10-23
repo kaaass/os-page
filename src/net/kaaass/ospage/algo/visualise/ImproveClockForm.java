@@ -37,7 +37,6 @@ public class ImproveClockForm extends BaseForm {
                 Config.getDefault().setClockPlaySpeed(parsed);
                 JOptionPane.showMessageDialog(frame, "修改成功！");
             } catch (Exception ignore) {
-                ignore.printStackTrace();
                 JOptionPane.showMessageDialog(frame, "请输入整数（>=0）！");
                 this.textFieldSpeed.setText(String.valueOf(Config.getDefault().getNurResetInterval()));
             }

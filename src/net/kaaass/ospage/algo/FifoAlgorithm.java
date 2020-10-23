@@ -23,6 +23,8 @@ public class FifoAlgorithm implements IAlgorithm {
 
     @Override
     public void init(PageTable pageTable) {
+        this.headPageId = -1;
+        this.tailPageId = -1;
         // 通常用于初始化页表所需要的字段
         for (int i = 0; i < pageTable.size(); i++) {
             pageTable.get(i).setAttribute(C_NEXT, -1);

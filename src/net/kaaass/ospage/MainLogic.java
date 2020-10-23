@@ -1,6 +1,8 @@
 package net.kaaass.ospage;
 
 import net.kaaass.ospage.algo.*;
+import net.kaaass.ospage.simu.Address;
+import net.kaaass.ospage.simu.Config;
 import net.kaaass.ospage.simu.IAlgorithm;
 import net.kaaass.ospage.simu.Simulation;
 
@@ -30,12 +32,14 @@ public class MainLogic {
     }
 
     public void showMainForm() {
+        this.form.init();
         this.form.setVisible(true);
     }
 
     public void setAlgorithm(IAlgorithm algorithm) {
         this.currentAlgorithm = algorithm;
         this.simulation.setAlgorithm(algorithm);
+        this.form.update();
     }
 
     public void reset() {
@@ -48,5 +52,20 @@ public class MainLogic {
 
     public List<IAlgorithm> getAvailableAlgorithms() {
         return availableAlgorithms;
+    }
+
+    public Simulation getSimulation() {
+        return simulation;
+    }
+
+    public void addRandomRequests() {
+        var count = Config.getDefault().getRandomAddRequestCount();
+        for (int i = 0; i < count; i++) {
+            this.simulation.addRequest(Simulation.Request.random());
+        }
+    }
+
+    public void addRequest(Simulation.AccessType type, int address) {
+        this.simulation.addRequest(new Simulation.Request(type, Address.of(address)));
     }
 }

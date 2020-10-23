@@ -27,6 +27,10 @@ public class Address {
         return addr & (PageEntry.FRAME_SIZE - 1);
     }
 
+    public String hexString() {
+        return String.format("%04x", raw());
+    }
+
     public static Address of(int value) {
         return new Address(value);
     }

@@ -1,14 +1,15 @@
 package net.kaaass.ospage;
 
-import net.kaaass.ospage.simu.IAlgorithm;
+import net.kaaass.ospage.simu.Config;
 import net.kaaass.ospage.simu.PageEntry;
+import net.kaaass.ospage.simu.Simulation;
 import net.kaaass.ospage.util.GuiUtils;
 
+import javax.management.ValueExp;
 import javax.swing.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.Collections;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class MainForm extends JFrame {
 
@@ -18,13 +19,13 @@ public class MainForm extends JFrame {
 
     private JTable tableRequest;
     private JTable tablePage;
-    private JComboBox<String> comboBoxRW;
+    private JComboBox<Simulation.AccessType> comboBoxRW;
     private JTextField textFieldAddress;
     private JButton btnAddRequest;
     private JButton btnRandRequest;
     private JComboBox<String> comboBoxAlgorithmSelect;
     private JButton btnNext;
-    private JButton btnAuto;
+    private JButton btnJump5;
     private JTable tableAddressMap;
     private JList<String> listLog;
     private JButton btnReset;
@@ -53,10 +54,15 @@ public class MainForm extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
+    }
+
+    public void init() {
         addListeners();
-        // 增加算法
-        logic.getAvailableAlgorithms().forEach(algorithm ->
+        // 增加下拉框内容
+        this.logic.getAvailableAlgorithms().forEach(algorithm ->
                 this.comboBoxAlgorithmSelect.addItem(algorithm.name()));
+        this.comboBoxRW.addItem(Simulation.AccessType.READ);
+        this.comboBoxRW.addItem(Simulation.AccessType.WRITE);
     }
 
     /**
@@ -65,11 +71,26 @@ public class MainForm extends JFrame {
     private void addListeners() {
         // 添加请求按钮
         btnAddRequest.addActionListener(e -> {
-            // TODO
+            // 解析参数
+            var type = (Simulation.AccessType) this.comboBoxRW.getSelectedItem();
+            int address = 0;
+            try {
+                address = Integer.parseInt(this.textFieldAddress.getText(), 16);
+                if (address < 0 || address >= (1 << 16))
+                    throw new Exception();
+            } catch (Exception ignore) {
+                JOptionPane.showMessageDialog(this,
+                        String.format("请输入十六进制数（0-%x）", (1 << 16) - 1));
+                return;
+            }
+            // 添加
+            this.logic.addRequest(type, address);
+            this.update();
         });
         // 随机添加请求按钮
         btnRandRequest.addActionListener(e -> {
-            // TODO
+            this.logic.addRandomRequests();
+            this.update();
         });
         // 算法选择框
         comboBoxAlgorithmSelect.addItemListener(e -> {
@@ -78,11 +99,23 @@ public class MainForm extends JFrame {
         });
         // 下一步按钮
         btnNext.addActionListener(e -> {
-            // TODO
+            if (this.logic.getSimulation().getRequestQueue().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "请求队列空！");
+                return;
+            }
+            this.logic.getSimulation().runStep();
+            this.update();
         });
-        // 自动播放按钮
-        btnAuto.addActionListener(e -> {
-            // TODO
+        // 跳过五步按钮
+        btnJump5.addActionListener(e -> {
+            if (this.logic.getSimulation().getRequestQueue().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "请求队列空！");
+                return;
+            }
+            for (int i = 0; i < 5; i++) {
+                this.logic.getSimulation().runStep();
+            }
+            this.update();
         });
         // 重置按钮
         btnReset.addActionListener(e -> {
@@ -103,13 +136,27 @@ public class MainForm extends JFrame {
     }
 
     public void update() {
-
+        // 请求列表
+        this.dataTableRequest.clear();
+        this.logic.getSimulation().getRequestQueue().stream()
+                .map(request -> {
+                    var row = new Vector<String>();
+                    row.add(request.type.toString());
+                    row.add(request.address.hexString());
+                    return row;
+                })
+                .forEach(dataTableRequest::add);
+        this.tableRequest.updateUI();
+        // 页表
+        var pageTable = this.logic.getSimulation().getPageTable();
+        this.dataTablePage.clear();
+        GuiUtils.mapPageEntry(this.dataTablePage, pageTable.stream().collect(Collectors.toList()), new String[0]);
+        this.tablePage.updateUI();
     }
 
     private void createUIComponents() {
         // 请求表
         var requestColumns = new Vector<>() {{
-            add("序号");
             add("类型");
             add("请求逻辑地址");
         }};
@@ -123,7 +170,6 @@ public class MainForm extends JFrame {
         this.tablePage = new JTable(dataTablePage, pageColumns);
         // 地址映射表
         var addrMapColumns = new Vector<>() {{
-            add("序号");
             add("源页号");
             add("页框号");
             add("地址映射（逻辑->物理）");

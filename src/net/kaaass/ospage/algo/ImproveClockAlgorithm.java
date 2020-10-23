@@ -16,6 +16,8 @@ public class ImproveClockAlgorithm implements IAlgorithm {
 
     @Override
     public void init(PageTable pageTable) {
+        this.clockPtr = -1;
+        this.roundNo = 1;
         // 初始化页表
         this.resetFlag(pageTable);
         this.clockPtr = -1;

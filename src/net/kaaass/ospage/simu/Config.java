@@ -35,6 +35,11 @@ public class Config {
      */
     private int clockPlaySpeed = 1000;
 
+    /**
+     * 随机添加请求的数量
+     */
+    private int randomAddRequestCount = 10;
+
     private final static Config DEFAULT = new Config();
 
     public static Config getDefault() {
@@ -87,5 +92,13 @@ public class Config {
 
     public void setClockPlaySpeed(int clockPlaySpeed) {
         this.clockPlaySpeed = clockPlaySpeed;
+    }
+
+    public int getRandomAddRequestCount() {
+        return randomAddRequestCount;
+    }
+
+    public void setRandomAddRequestCount(int randomAddRequestCount) {
+        this.randomAddRequestCount = randomAddRequestCount;
     }
 }
