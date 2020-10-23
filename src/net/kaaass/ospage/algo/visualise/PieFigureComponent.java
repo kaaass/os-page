@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.Collection;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 /**
  * 饼图控件
@@ -123,10 +124,16 @@ public class PieFigureComponent extends JComponent {
 
     public void drawCentricString(Graphics2D g2d, double x, double y, String text, Font font) {
         FontMetrics metrics = g2d.getFontMetrics(font);
-        x = x - metrics.stringWidth(text) / 2.;
-        y = y - metrics.getHeight() / 2. + metrics.getAscent();
+        var lines = text.lines().collect(Collectors.toList());
+        int w = text.lines().mapToInt(metrics::stringWidth).max().orElse(0);
+        int h = lines.size() * metrics.getHeight();
+        x = x - w / 2.;
+        y = y - h / 2. + metrics.getAscent();
         g2d.setFont(font);
-        g2d.drawString(text, round(x), round(y));
+        for (var line : lines) {
+            g2d.drawString(line, round(x), round(y));
+            y += metrics.getHeight();
+        }
     }
 
     private void drawArrow(Graphics2D g2d, double x1, double y1, double x2, double y2) {
