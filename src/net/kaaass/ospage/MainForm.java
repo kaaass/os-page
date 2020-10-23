@@ -8,6 +8,8 @@ import net.kaaass.ospage.util.GuiUtils;
 
 import javax.management.ValueExp;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Vector;
 import java.util.stream.Collectors;
@@ -32,6 +34,11 @@ public class MainForm extends JFrame {
     private JButton btnReset;
     private JButton btnAbout;
     private JPanel mainPanel;
+    private JTextField textFieldWorkSetSize;
+    private JTextField textFieldWorkSet;
+    private JTextField textFieldWorkSetCount;
+    private JTextField textFieldWorkSetWindowSize;
+    private JButton btnUpdateWindowSize;
 
     /*
      * GUI数据
@@ -64,6 +71,8 @@ public class MainForm extends JFrame {
                 this.comboBoxAlgorithmSelect.addItem(algorithm.name()));
         this.comboBoxRW.addItem(Simulation.AccessType.READ);
         this.comboBoxRW.addItem(Simulation.AccessType.WRITE);
+        // 设置文本域初始值
+        this.textFieldWorkSetWindowSize.setText(String.valueOf(Config.getDefault().getWindowSize()));
     }
 
     /**
@@ -118,15 +127,23 @@ public class MainForm extends JFrame {
             }
             this.update();
         });
+        // 更新工作集窗口大小
+        btnUpdateWindowSize.addActionListener(e -> {
+            try {
+                int parsed = Integer.parseInt(this.textFieldWorkSetWindowSize.getText());
+                if (parsed < 1)
+                    throw new Exception();
+                Config.getDefault().setWindowSize(parsed);
+                reset();
+                JOptionPane.showMessageDialog(this, "修改成功！");
+            } catch (Exception ignore) {
+                JOptionPane.showMessageDialog(this, "请输入正整数！");
+                this.textFieldWorkSetWindowSize.setText(String.valueOf(Config.getDefault().getWindowSize()));
+            }
+        });
         // 重置按钮
         btnReset.addActionListener(e -> {
-            this.logic.reset();
-            this.update();
-            // 清除日志
-            this.dataTableAddrMap.clear();
-            this.dataLog.clear();
-            this.tableAddressMap.updateUI();
-            this.listLog.updateUI();
+            reset();
         });
         // 关于按钮
         btnAbout.addActionListener(e -> {
@@ -134,6 +151,16 @@ public class MainForm extends JFrame {
                     "本程序为吉林大学软件学院2018级操作系统课程设计（荣誉课）的结果物\n" +
                             "作者：@KAAAsS @KevinAxel");
         });
+    }
+
+    private void reset() {
+        this.logic.reset();
+        this.update();
+        // 清除日志
+        this.dataTableAddrMap.clear();
+        this.dataLog.clear();
+        this.tableAddressMap.updateUI();
+        this.listLog.updateUI();
     }
 
     public void update() {
@@ -153,6 +180,11 @@ public class MainForm extends JFrame {
         this.dataTablePage.clear();
         GuiUtils.mapPageEntry(this.dataTablePage, pageTable.stream().collect(Collectors.toList()), new String[0]);
         this.tablePage.updateUI();
+        // 更新工作集
+        var workingSet = this.logic.getSimulation().getWorkingSet();
+        this.textFieldWorkSetCount.setText(String.valueOf(workingSet.getCount()));
+        this.textFieldWorkSet.setText(workingSet.getWorkSet().toString());
+        this.textFieldWorkSetSize.setText(String.valueOf(workingSet.size()));
     }
 
     private void createUIComponents() {

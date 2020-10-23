@@ -30,7 +30,6 @@ public class NurForm extends BaseForm {
                 Config.getDefault().setNurResetInterval(parsed);
                 JOptionPane.showMessageDialog(frame, "修改成功！");
             } catch (Exception ignore) {
-                ignore.printStackTrace();
                 JOptionPane.showMessageDialog(frame, "请输入整数！");
                 this.textFieldInternal.setText(String.valueOf(Config.getDefault().getNurResetInterval()));
             }

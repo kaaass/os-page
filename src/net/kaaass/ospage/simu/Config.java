@@ -33,7 +33,7 @@ public class Config {
     /**
      * 时钟算法播放速度
      */
-    private int clockPlaySpeed = 1000;
+    private int clockPlaySpeed = 100;
 
     /**
      * 随机添加请求的数量

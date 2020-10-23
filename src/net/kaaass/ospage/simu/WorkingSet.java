@@ -68,4 +68,12 @@ public class WorkingSet {
         this.count = 0;
         this.lastPredict = init;
     }
+
+    public int getCount() {
+        return count;
+    }
+
+    public Set<Integer> getWorkSet() {
+        return workSet;
+    }
 }
