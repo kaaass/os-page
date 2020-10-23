@@ -1,10 +1,7 @@
 package net.kaaass.ospage;
 
 import net.kaaass.ospage.algo.*;
-import net.kaaass.ospage.simu.Address;
-import net.kaaass.ospage.simu.Config;
-import net.kaaass.ospage.simu.IAlgorithm;
-import net.kaaass.ospage.simu.Simulation;
+import net.kaaass.ospage.simu.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -28,6 +25,7 @@ public class MainLogic {
             add(new ClockAlgorithm());
             add(new ImproveClockAlgorithm());
         }};
+        SimulationLogger.setLogic(this);
         this.form = new MainForm(this);
     }
 
@@ -67,5 +65,13 @@ public class MainLogic {
 
     public void addRequest(Simulation.AccessType type, int address) {
         this.simulation.addRequest(new Simulation.Request(type, Address.of(address)));
+    }
+
+    public void log(String content) {
+        this.form.addLogText(content);
+    }
+
+    public void log(Address source, Address dest) {
+        this.form.addMapping(source, dest);
     }
 }

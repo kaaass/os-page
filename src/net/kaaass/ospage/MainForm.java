@@ -1,5 +1,6 @@
 package net.kaaass.ospage;
 
+import net.kaaass.ospage.simu.Address;
 import net.kaaass.ospage.simu.Config;
 import net.kaaass.ospage.simu.PageEntry;
 import net.kaaass.ospage.simu.Simulation;
@@ -180,5 +181,24 @@ public class MainForm extends JFrame {
         // 日志
         this.dataLog = new Vector<>();
         this.listLog = new JList<>(dataLog);
+    }
+
+    public void addLogText(String content) {
+        this.dataLog.add(content);
+        this.listLog.updateUI();
+        // 滚动到最后
+        this.listLog.ensureIndexIsVisible(this.dataLog.size() - 1);
+    }
+
+    public void addMapping(Address source, Address dest) {
+        var row = new Vector<String>();
+        row.add(String.valueOf(source.prefix()));
+        row.add(String.valueOf(dest.prefix()));
+        row.add(String.format("%s -> %s", source.hexString(), dest.hexString()));
+        this.dataTableAddrMap.add(row);
+        this.tableAddressMap.updateUI();
+        // 滚动到最后
+        this.tableAddressMap.scrollRectToVisible(this.tableAddressMap.getCellRect(
+                this.tableAddressMap.getRowCount() - 1, 0, true));
     }
 }
