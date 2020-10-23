@@ -4,6 +4,9 @@ import javax.swing.*;
 
 public class Entry {
     public static void main(String[] args) {
+        // 字体反锯齿
+        System.setProperty("awt.useSystemAAFontSettings", "on");
+        System.setProperty("swing.aatext", "true");
         // 设置Gtk风格GUI
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
